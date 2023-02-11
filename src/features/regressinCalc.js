@@ -6,7 +6,7 @@ const regressionCalc = (data) => {
   const formattedPoints = result.points.map((u) => {
     return { x: u[0], y: u[1] };
   });
-  console.log(formattedPoints);
+  // console.log(formattedPoints);
   return { result, formattedPoints };
 };
 
