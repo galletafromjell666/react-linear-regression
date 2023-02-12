@@ -81,7 +81,11 @@ export function Chart() {
     ],
   };
 
-  return <Line options={options} data={data} />;
+  return <div><Line options={options} data={data} />
+  <h1>RawData </h1>
+  <p>
+    {JSON.stringify(rawData)}
+    </p></div>;
 }
 
 export default Chart;
