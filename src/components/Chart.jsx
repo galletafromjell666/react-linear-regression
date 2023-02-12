@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from 'react-redux';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -10,7 +11,7 @@ import {
   Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-import regressionCalc from "../features/regressinCalc";
+import regressionCalc from "../features/regression/regressinCalc";
 
 ChartJS.register(
   CategoryScale,
@@ -81,6 +82,8 @@ export function Chart() {
     ],
   };
 
+  const todos = useSelector((state) => state.CartessianPoints);
+console.log(todos)
   return <div><Line options={options} data={data} />
   <h1>RawData </h1>
   <p>
