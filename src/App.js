@@ -1,11 +1,11 @@
 
-import Chart from './components/Chart';
-import './App.css';
+import "./App.css";
+import Polynomial from "./routes/Polynomial";
 
 function App() {
   return (
     <div className="App">
-   <Chart/>
+      <Polynomial />
     </div>
   );
 }
