@@ -1,5 +1,6 @@
 import regression from "regression";
 const regressionCalc = (data) => {
+  console.log('calc!')
   const dataArr = data.map((u) => [u.x, u.y]);
   //console.log(dataArr);
   const result = regression.polynomial(dataArr);

@@ -1,5 +1,4 @@
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
@@ -24,10 +23,18 @@ export const options = {
 };
 
 export function Chart() {
-    const pointState = useSelector((state) => state.CartessianPoints);
-    console.log('state',pointState);
+    const [regressionPlot, setRegressionPlot] = useState([]);
+    const [cleanPointData, setCleanPointData] = useState([]);
+    const [regresssionRes, setRegresssionRes] = useState({});
+    const [chartData, setChartData] = useState({});
+    const [show, setshow] = useState(true);
 
-    const storeCleanData = pointState.map(u => u.coordinates)
+    const pointState = useSelector((state) => state.CartessianPoints);
+    useEffect(() => {
+        let storeCleanData = pointState.map((u) => u.coordinates);
+        setCleanPointData(storeCleanData);
+    }, [pointState]);
+
     const rawData = [
         { x: 1, y: 1 },
         { x: 2, y: 1 },
@@ -39,40 +46,71 @@ export function Chart() {
         { x: 40, y: -10 }
     ];
 
-    function labelCalc(rawData) {
-        const arr = rawData.map((u) => u.x);
+    function calc() {
+        setshow(!show);
+        const { result, formattedPoints } = regressionCalc(cleanPointData);
+        setRegressionPlot(formattedPoints);
+        setRegresssionRes(result);
+        setChartData({
+            labels: labelCalc(cleanPointData),
+            datasets: [
+                {
+                    label: 'OG',
+                    data: cleanPointData,
+                    borderColor: 'rgb(255,69,0)',
+                    backgroundColor: 'rgba(255,69,0, 0.5)',
+                    pointRadius: 10,
+                    showLine: false
+                },
+                {
+                    label: regresssionRes.string,
+                    data: regressionPlot || [],
+                    borderColor: 'rgb(0,250,154)',
+                    backgroundColor: 'rgba(0,250,154, 0.5)',
+                    pointRadius: 5
+                }
+            ]
+        });
+        setshow(!show);
+    }
+
+    function labelCalc(data) {
+        const arr = data.map((u) => u.x);
         return [Math.min(...arr) - 5, ...arr.sort((a, b) => a - b), Math.max(...arr) + 5];
     }
-    const { result, formattedPoints } = regressionCalc(storeCleanData);
-    console.log(result);
+
     const data = {
-        labels: labelCalc(storeCleanData),
+        labels: labelCalc(cleanPointData),
         datasets: [
             {
                 label: 'OG',
-                data: storeCleanData,
+                data: cleanPointData,
                 borderColor: 'rgb(255,69,0)',
                 backgroundColor: 'rgba(255,69,0, 0.5)',
                 pointRadius: 10,
                 showLine: false
             },
             {
-                label: result.string,
-                data: formattedPoints,
+                label: regresssionRes.string,
+                data: regressionPlot || [],
                 borderColor: 'rgb(0,250,154)',
                 backgroundColor: 'rgba(0,250,154, 0.5)',
-                pointRadius: 0
+                pointRadius: 5
             }
         ]
     };
 
     return (
         <div>
-            <Line options={options} data={data} />
-            <h1>RawData </h1>
-            {formattedPoints && <p>{JSON.stringify(formattedPoints)}</p>}
-            {formattedPoints && formattedPoints.map((u, index) => <p key={index}> {`x = ${u.x} y=${u.y}`}</p>)}
-            
+            {show && <Line options={options} data={data} />}
+            <button onClick={calc}>Activate Lasers</button>
+            <h1>input </h1>
+            {cleanPointData && <p>{JSON.stringify(cleanPointData)}</p>}
+            {cleanPointData && cleanPointData.map((u, index) => <p key={index}> {`x = ${u.x} y=${u.y}`}</p>)}
+            <div>
+                <h1>Output</h1>
+                {regressionPlot && JSON.stringify(regressionPlot)}
+            </div>
         </div>
     );
 }
