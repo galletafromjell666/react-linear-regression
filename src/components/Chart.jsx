@@ -26,8 +26,7 @@ export function Chart() {
     const [regressionPlot, setRegressionPlot] = useState([]);
     const [cleanPointData, setCleanPointData] = useState([]);
     const [regresssionRes, setRegresssionRes] = useState({});
-    const [chartData, setChartData] = useState({});
-    const [show, setshow] = useState(true);
+    const [chartData, setChartData] = useState({})
 
     const pointState = useSelector((state) => state.CartessianPoints);
     useEffect(() => {
@@ -47,7 +46,6 @@ export function Chart() {
     ];
 
     function calc() {
-        setshow(!show);
         const { result, formattedPoints } = regressionCalc(cleanPointData);
         setRegressionPlot(formattedPoints);
         setRegresssionRes(result);
@@ -70,8 +68,7 @@ export function Chart() {
                     pointRadius: 5
                 }
             ]
-        });
-        setshow(!show);
+        })
     }
 
     function labelCalc(data) {
@@ -102,7 +99,7 @@ export function Chart() {
 
     return (
         <div>
-            {show && <Line options={options} data={data} />}
+            <Line options={options} data={data} />
             <button onClick={calc}>Activate Lasers</button>
             <h1>input </h1>
             {cleanPointData && <p>{JSON.stringify(cleanPointData)}</p>}
@@ -116,3 +113,8 @@ export function Chart() {
 }
 
 export default Chart;
+/*
+
+[{"x":"8","y":"8"},{"x":"10","y":"10"}]
+[{"x":8,"y":8},{"x":10,"y":10}]
+ */

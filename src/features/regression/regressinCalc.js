@@ -5,7 +5,7 @@ const regressionCalc = (data) => {
   //console.log(dataArr);
   const result = regression.polynomial(dataArr);
   const formattedPoints = result.points.map((u) => {
-    return { x: u[0], y: u[1] };
+    return { x: String(u[0]), y: String(u[1]) };
   });
   // console.log(formattedPoints);
   return { result, formattedPoints };
