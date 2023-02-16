@@ -26,12 +26,14 @@ export function Chart() {
     const [regressionPlot, setRegressionPlot] = useState([]);
     const [cleanPointData, setCleanPointData] = useState([]);
     const [regresssionRes, setRegresssionRes] = useState({});
-    const [chartData, setChartData] = useState({})
-
+    
     const pointState = useSelector((state) => state.CartessianPoints);
     useEffect(() => {
         let storeCleanData = pointState.map((u) => u.coordinates);
         setCleanPointData(storeCleanData);
+        const { result, formattedPoints } = regressionCalc(storeCleanData);
+        setRegressionPlot(formattedPoints);
+        setRegresssionRes(result);
     }, [pointState]);
 
     const rawData = [
@@ -44,32 +46,6 @@ export function Chart() {
         { x: 32, y: 10 },
         { x: 40, y: -10 }
     ];
-
-    function calc() {
-        const { result, formattedPoints } = regressionCalc(cleanPointData);
-        setRegressionPlot(formattedPoints);
-        setRegresssionRes(result);
-        setChartData({
-            labels: labelCalc(cleanPointData),
-            datasets: [
-                {
-                    label: 'OG',
-                    data: cleanPointData,
-                    borderColor: 'rgb(255,69,0)',
-                    backgroundColor: 'rgba(255,69,0, 0.5)',
-                    pointRadius: 10,
-                    showLine: false
-                },
-                {
-                    label: regresssionRes.string,
-                    data: regressionPlot || [],
-                    borderColor: 'rgb(0,250,154)',
-                    backgroundColor: 'rgba(0,250,154, 0.5)',
-                    pointRadius: 5
-                }
-            ]
-        })
-    }
 
     function labelCalc(data) {
         const arr = data.map((u) => u.x);
@@ -100,7 +76,6 @@ export function Chart() {
     return (
         <div>
             <Line options={options} data={data} />
-            <button onClick={calc}>Activate Lasers</button>
             <h1>input </h1>
             {cleanPointData && <p>{JSON.stringify(cleanPointData)}</p>}
             {cleanPointData && cleanPointData.map((u, index) => <p key={index}> {`x = ${u.x} y=${u.y}`}</p>)}
@@ -113,8 +88,3 @@ export function Chart() {
 }
 
 export default Chart;
-/*
-
-[{"x":"8","y":"8"},{"x":"10","y":"10"}]
-[{"x":8,"y":8},{"x":10,"y":10}]
- */
