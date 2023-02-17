@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { removePoint } from '../features/regression/regressionSlice';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import regressionCalc from '../features/regression/regressinCalc';
@@ -23,10 +24,11 @@ export const options = {
 };
 
 export function Chart() {
+    const dispatch = useDispatch();
     const [regressionPlot, setRegressionPlot] = useState([]);
     const [cleanPointData, setCleanPointData] = useState([]);
     const [regresssionRes, setRegresssionRes] = useState({});
-    
+
     const pointState = useSelector((state) => state.CartessianPoints);
     useEffect(() => {
         let storeCleanData = pointState.map((u) => u.coordinates);
@@ -77,8 +79,20 @@ export function Chart() {
         <div>
             <Line options={options} data={data} />
             <h1>input </h1>
-            {cleanPointData && <p>{JSON.stringify(cleanPointData)}</p>}
-            {cleanPointData && cleanPointData.map((u, index) => <p key={index}> {`x = ${u.x} y=${u.y}`}</p>)}
+            {pointState && <p>{JSON.stringify(pointState)}</p>}
+            {pointState &&
+                pointState.map(({ id, coordinates: { x, y } }) => (
+                    <div key={id} style={{display:"flex", flexDirection:"row"}}>
+                        <p> {`x = ${x} y=${y}`}</p>
+                        <button
+                            onClick={() => {
+                                dispatch(removePoint(id));
+                            }}
+                        >
+                            X
+                        </button>
+                    </div>
+                ))}
             <div>
                 <h1>Output</h1>
                 {regressionPlot && JSON.stringify(regressionPlot)}
