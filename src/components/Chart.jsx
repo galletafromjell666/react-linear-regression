@@ -78,25 +78,6 @@ export function Chart() {
     return (
         <div>
             <Line options={options} data={data} />
-            <h1>input </h1>
-            {pointState && <p>{JSON.stringify(pointState)}</p>}
-            {pointState &&
-                pointState.map(({ id, coordinates: { x, y } }) => (
-                    <div key={id} style={{display:"flex", flexDirection:"row"}}>
-                        <p> {`x = ${x} y=${y}`}</p>
-                        <button
-                            onClick={() => {
-                                dispatch(removePoint(id));
-                            }}
-                        >
-                            X
-                        </button>
-                    </div>
-                ))}
-            <div>
-                <h1>Output</h1>
-                {regressionPlot && JSON.stringify(regressionPlot)}
-            </div>
         </div>
     );
 }
