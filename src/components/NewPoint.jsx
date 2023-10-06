@@ -6,6 +6,7 @@ const NewPoint = () => {
   const dispatch = useDispatch();
   const [values, setValues] = useState({ valX: 0, errorValX: false, valY: 0, errorValY: false });
 
+  // TODO: Clean this handler
   const handleSubmit = useCallback((e) => {
     e.preventDefault();
     setValues({ ...values, errorValX: false, errorValY: false });

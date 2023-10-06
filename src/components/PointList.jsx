@@ -6,7 +6,6 @@ const PointList = () => {
     const pointState = useSelector((state) => state.CartessianPoints);
     return (
         <div>
-            {' '}
             {pointState &&
                 pointState.map(({ id, coordinates: { x, y } }) => (
                     <div key={id} style={{ display: 'flex', flexDirection: 'row' }}>

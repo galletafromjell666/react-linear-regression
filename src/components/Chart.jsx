@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { removePoint } from '../features/regression/regressionSlice';
+import { useSelector } from 'react-redux';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import regressionCalc from '../features/regression/regressinCalc';
@@ -24,12 +23,13 @@ export const options = {
 };
 
 export function Chart() {
-    const dispatch = useDispatch();
+    // TODO: Remove some (if not all) useState
     const [regressionPlot, setRegressionPlot] = useState([]);
     const [cleanPointData, setCleanPointData] = useState([]);
     const [regresssionRes, setRegresssionRes] = useState({});
 
     const pointState = useSelector((state) => state.CartessianPoints);
+    // TODO: Remove this useEffect
     useEffect(() => {
         let storeCleanData = pointState.map((u) => u.coordinates);
         setCleanPointData(storeCleanData);
@@ -38,24 +38,14 @@ export function Chart() {
         setRegresssionRes(result);
     }, [pointState]);
 
-    const rawData = [
-        { x: 1, y: 1 },
-        { x: 2, y: 1 },
-        { x: 3, y: 2 },
-        { x: 5, y: 3 },
-        { x: 22, y: -1 },
-        { x: 23, y: -5 },
-        { x: 32, y: 10 },
-        { x: 40, y: -10 }
-    ];
-
     function labelCalc(data) {
         const arr = data.map((u) => u.x);
-        return [Math.min(...arr) - 5, ...arr.sort((a, b) => a - b), Math.max(...arr) + 5];
+        return [Math.min(...arr) - 5, ...arr.sort((a, b) => a - b), Math.max(...arr) + 5].map(u => parseFloat(u));
     }
 
+    const label = labelCalc(cleanPointData)
     const data = {
-        labels: labelCalc(cleanPointData),
+        labels: label,
         datasets: [
             {
                 label: 'OG',
@@ -66,7 +56,7 @@ export function Chart() {
                 showLine: false
             },
             {
-                label: regresssionRes.string,
+                label: regresssionRes,
                 data: regressionPlot || [],
                 borderColor: 'rgb(0,250,154)',
                 backgroundColor: 'rgba(0,250,154, 0.5)',
