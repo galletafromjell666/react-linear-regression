@@ -1,10 +1,12 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
 
+let win;
 function createWindow() {
-    const mainWindow = new BrowserWindow({
-        width: 800,
+    win = new BrowserWindow({
+        frame: false,
+        width: 1200,
         height: 600,
         // comunication between node and electron
         webPreferences: {
@@ -19,16 +21,15 @@ function createWindow() {
               slashes: true
           })
         : 'http://localhost:3000';
-    mainWindow.loadURL(appURL);
+    win.loadURL(appURL);
 
     if (!app.isPackaged) {
-        mainWindow.webContents.openDevTools();
+        win.webContents.openDevTools();
     }
 }
 
 app.whenReady().then(() => {
     createWindow();
-
     app.on('activate', function () {
         if (BrowserWindow.getAllWindows().length === 0) {
             createWindow();
@@ -40,4 +41,25 @@ app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
         app.quit();
     }
+});
+
+ipcMain.on('frameEvent', (_, action) => {
+    if (action === 'close') {
+        win.close();
+    }
+    if (action === 'minimize') {
+        win.minimize();
+    }
+    if (action === 'maximize') {
+        if (win.isMaximized()) {
+            win.restore();
+        } else {
+            win.maximize();
+        }
+    }
+});
+
+// genericApi example
+ipcMain.on('sendToMain', (_, args) => {
+    console.log(args);
 });
