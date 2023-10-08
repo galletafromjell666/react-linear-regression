@@ -13,8 +13,7 @@ contextBridge.exposeInMainWorld('custom_app', {
         console.log(`Received ${data} from main process`)
     });
 
-     window.custom_app.genericApi("sendToMain", {data : "important data"});
-    */
+     window.custom_app.genericApi.send("sendToMain", {data : "important data"}); */
     genericApi: {
         send: (channel, data) => {
             let validChannels = ['sendToMain'];
@@ -29,6 +28,7 @@ contextBridge.exposeInMainWorld('custom_app', {
             }
         }
     },
+    //E.g. window.custom_app.customFrame.sendFrameEvent('minimize')
     customFrame: {
         sendFrameEvent(action) {
             ipcRenderer.send('frameEvent', action);

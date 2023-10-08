@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
+const { initializeIPCEventHandlers } = require('./ipcHandlers');
 
 let win;
 function createWindow() {
@@ -23,6 +24,8 @@ function createWindow() {
         : 'http://localhost:3000';
     win.loadURL(appURL);
 
+    initializeIPCEventHandlers(win);
+
     if (!app.isPackaged) {
         win.webContents.openDevTools();
     }
@@ -41,25 +44,4 @@ app.on('window-all-closed', function () {
     if (process.platform !== 'darwin') {
         app.quit();
     }
-});
-
-ipcMain.on('frameEvent', (_, action) => {
-    if (action === 'close') {
-        win.close();
-    }
-    if (action === 'minimize') {
-        win.minimize();
-    }
-    if (action === 'maximize') {
-        if (win.isMaximized()) {
-            win.restore();
-        } else {
-            win.maximize();
-        }
-    }
-});
-
-// genericApi example
-ipcMain.on('sendToMain', (_, args) => {
-    console.log(args);
 });

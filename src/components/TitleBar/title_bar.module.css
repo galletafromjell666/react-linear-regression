@@ -1,0 +1,12 @@
+.main {
+    height: 2rem;
+    position: relative;
+    -webkit-app-region: drag;
+}
+
+.buttonContainer{
+    position: absolute;
+    top: 0;
+    right: 0;
+    -webkit-app-region: no-drag;
+}
